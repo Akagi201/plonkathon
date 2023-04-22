@@ -4,7 +4,7 @@ from compiler.program import Program
 from curve import G1Point
 from poly import Basis, Polynomial
 from setup import Setup
-from prover import Prover
+from plonkathon.prover import Prover
 from verifier import VerificationKey
 import json
 from test.mini_poseidon import rc, mds, poseidon_hash
@@ -14,7 +14,7 @@ from utils import *
 def setup_test():
     print("===setup_test===")
 
-    setup = Setup.from_file("test/powersOfTau28_hez_final_11.ptau")
+    setup = Setup.from_file("plonkathon/test/powersOfTau28_hez_final_11.ptau")
     dummy_values = Polynomial(
         list(map(Scalar, [1, 2, 3, 4, 5, 6, 7, 8])), Basis.LAGRANGE
     )
@@ -38,12 +38,12 @@ def basic_test():
     print("===basic_test===")
 
     # Extract 2^28 powers of tau
-    setup = Setup.from_file("test/powersOfTau28_hez_final_11.ptau")
+    setup = Setup.from_file("plonkathon/test/powersOfTau28_hez_final_11.ptau")
     print("Extracted setup")
     program = Program(["c <== a * b"], 8)
     vk = setup.verification_key(program.common_preprocessed_input())
     print("Generated verification key")
-    their_output = json.load(open("test/main.plonk.vkey.json"))
+    their_output = json.load(open("plonkathon/test/main.plonk.vkey.json"))
     for key in ("Qm", "Ql", "Qr", "Qo", "Qc", "S1", "S2", "S3", "X_2"):
         if interpret_json_point(their_output[key]) != getattr(vk, key):
             raise Exception(
@@ -70,7 +70,7 @@ def ab_plus_a_test(setup):
     program = Program(["ab === a - c", "-ab === a * b"], 8)
     vk = setup.verification_key(program.common_preprocessed_input())
     print("Generated verification key")
-    their_output = json.load(open("test/main.plonk.vkey-58.json"))
+    their_output = json.load(open("plonkathon/test/main.plonk.vkey-58.json"))
     for key in ("Qm", "Ql", "Qr", "Qo", "Qc", "S1", "S2", "S3", "X_2"):
         if interpret_json_point(their_output[key]) != getattr(vk, key):
             raise Exception(
@@ -88,7 +88,7 @@ def one_public_input_test(setup):
     program = Program(["c public", "c === a * b"], 8)
     vk = setup.verification_key(program.common_preprocessed_input())
     print("Generated verification key")
-    their_output = json.load(open("test/main.plonk.vkey-59.json"))
+    their_output = json.load(open("plonkathon/test/main.plonk.vkey-59.json"))
     for key in ("Qm", "Ql", "Qr", "Qo", "Qc", "S1", "S2", "S3", "X_2"):
         if interpret_json_point(their_output[key]) != getattr(vk, key):
             raise Exception(
@@ -269,7 +269,7 @@ if __name__ == "__main__":
     prover_test_dummy_verifier(setup)
 
     # Step 3: Pass verifier test using your own verifier
-    with open("test/proof.pickle", "rb") as f:
+    with open("plonkathon/test/proof.pickle", "rb") as f:
         proof = pickle.load(f)
     verifier_test_unoptimized(setup, proof)
     verifier_test_full(setup, proof)

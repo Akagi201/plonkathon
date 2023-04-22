@@ -15,6 +15,9 @@ merlin = {git = "https://github.com/nalinbhardwaj/curdleproofs.pie", rev = "mast
 mypy = "^1.2.0"
 black = "^23.3.0"
 
+[tool.poetry.scripts]
+setup_test = "plonkathon.test:setup_test"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

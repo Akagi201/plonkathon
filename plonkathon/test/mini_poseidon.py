@@ -18,7 +18,7 @@ from curve import Scalar
 
 rc = [
     [Scalar(a), Scalar(b), Scalar(c)]
-    for (a, b, c) in json.load(open("test/poseidon_rc.json"))
+    for (a, b, c) in json.load(open("plonkathon/test/poseidon_rc.json"))
 ]
 
 mds = [Scalar(1) / i for i in range(3, 8)]
