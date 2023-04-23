@@ -69,9 +69,26 @@ class Setup(object):
         # Run inverse FFT to convert values from Lagrange basis to monomial basis
         # Optional: Check values size does not exceed maximum power setup can handle
         # Compute linear combination of setup with values
-        return NotImplemented
+        monomial_basis = values.ifft()
+        assert len(monomial_basis.values) <= len(self.powers_of_x)
+        pairs = []
+        for i in range(len(monomial_basis.values)):
+            pairs.append((self.powers_of_x[i], monomial_basis.values[i]))
+        return ec_lincomb(pairs)
 
     # Generate the verification key for this program with the given setup
     def verification_key(self, pk: CommonPreprocessedInput) -> VerificationKey:
         # Create the appropriate VerificationKey object
-        return NotImplemented
+        return VerificationKey(
+            group_order=pk.group_order,
+            Qm=self.commit(pk.QM),
+            Ql=self.commit(pk.QL),
+            Qr=self.commit(pk.QR),
+            Qo=self.commit(pk.QO),
+            Qc=self.commit(pk.QC),
+            S1=self.commit(pk.S1),
+            S2=self.commit(pk.S2),
+            S3=self.commit(pk.S3),
+            X_2=self.X2,
+            w=Scalar.root_of_unity(group_order=pk.group_order),
+        )
